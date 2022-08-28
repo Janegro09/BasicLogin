@@ -7,9 +7,9 @@ import { DateSelectionView, NothingSelectedView, ProductSelection } from '../vie
 export const JournalPage = () => {
   return (
     <JournalLayout>
-        <NothingSelectedView />
+        {/* <NothingSelectedView /> */}
 
-        {/* <DateSelectionView /> */}
+        <DateSelectionView />
 
         {/* <ProductSelection /> */}
 

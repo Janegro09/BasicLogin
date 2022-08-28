@@ -12,6 +12,7 @@ export const DateSelectionView = () => {
     const [ value, setValue ] = useState(new Date());
     const [ fecha, setFecha ] = useState(false);
     const [ fechaConf, setFechaConf ] = useState([]);
+    
 
     const handleChangeDate = (e) => {
         let {$D, $y, $M} = e;
@@ -20,9 +21,6 @@ export const DateSelectionView = () => {
         setFecha(fecha);
         setValue(value);
     }
-    // useEffect(() => {
-    //     setFechaConf(fechaConf)
-    // })
     
     const saveDate = () => {
         Swal.fire({
@@ -32,16 +30,25 @@ export const DateSelectionView = () => {
             confirmButtonColor: '#655CC9'
         }).then((result) => {
             if (result.isConfirmed) {
+                
                 if(fechaConf.includes(fecha))  {
                     Swal.fire('Seleccioná otra fecha porque esa ya existe', '', 'warning')
                     return
                 }
+
                 if(fechaConf.length>=3) fechaConf.shift()
-                fechaConf.push(fecha)
+                
+                setFechaConf([...fechaConf, fecha])
+
                 Swal.fire('Fecha Guarda', '', 'success')
-                console.log(fechaConf)
             }})
     }
+
+    // useEffect(() => {
+    //     // setFechaConf(fechaConf)
+    //     console.log("llamado")
+    // }, [handleChangeDate, saveDate])
+
 
   return (
     <Grid 
@@ -84,15 +91,7 @@ export const DateSelectionView = () => {
         </Grid>
         
         <DateGalery fechas={fechaConf} />
-        {/* <Grid container>
-        {
-            fechaConf.map(elem => {return (
-                <Grid item>
-                    {elem}
-                </Grid>)
-            })
-        }
-        </Grid> */}
+
     </Grid>
     
   )
