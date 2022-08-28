@@ -10,7 +10,7 @@ export const DateSelectionView = () => {
 
     const [ value, setValue ] = useState(new Date());
     const [ fecha, setFecha ] = useState(false);
-    const [ fechaConf, setFechaConf ] = useState(false);
+    const [ fechaConf, setFechaConf ] = useState([]);
 
     const handleChangeDate = (e) => {
         let {$D, $y, $M} = e;
@@ -23,20 +23,22 @@ export const DateSelectionView = () => {
     const saveDate = () => {
         Swal.fire({
             title: 'Seleccionaste la fecha  <br>' + fecha,
-            // showDenyButton: true,
             showCancelButton: true,
             confirmButtonText: 'Guardar',
-            confirmButtonColor: '#655CC9',
-
+            confirmButtonColor: '#655CC9'
           }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                setFechaConf(fecha)
-                Swal.fire('Saved!', '', 'success')
-
-            }})
+              if (result.isConfirmed) {
+                  if(fechaConf.includes(fecha))  {
+                      Swal.fire('Seleccioná otra fecha porque esa ya existe', '', 'warning')
+                      return
+                    }
+                if(fechaConf.length>=3) fechaConf.shift()
+                fechaConf.push(fecha)
+                Swal.fire('Fecha Guarda', '', 'success')
+                console.log(fechaConf)
+                setFechaConf(fechaConf)
+        }})
     }
-
 
   return (
     <Grid 
@@ -52,22 +54,11 @@ export const DateSelectionView = () => {
             </Typography>
         </Grid> 
         <Grid container>
-            {/* <TextField
-                onChange={handleDate}
-                id="date"
-                label="Birthday"
-                type="date"
-                sx={{ width: 220 }}
-                InputLabelProps={{
-                shrink: true,
-                }}
-            /> */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Calendario"
                     value={value}
                     inputFormat="DD/MM/YYYY"
-
                     // onChange={handleChangeDate}
                     onChange={
                         handleChangeDate
@@ -75,27 +66,26 @@ export const DateSelectionView = () => {
                     renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
-
         </Grid>
         <Grid item>
-            {fecha && 
-            
-            <Button 
-                color="primary" 
-                sx={{ padding:2 }}
-                onClick={saveDate}
-            >
-                <SaveOutlined sx={{ fontSize: 30, mr:1 }} />
-                Guardar
-            </Button>
-                  }
+            {fecha &&             
+                <Button 
+                    color="primary" 
+                    sx={{ padding:2 }}
+                    onClick={saveDate}
+                >
+                    <SaveOutlined sx={{ fontSize: 30, mr:1 }} />
+                    Guardar
+                </Button>
+            }
         </Grid>
-
-        <Grid item>
-            <Typography fontSize={ 39 } fontWeight='light' >
-            {fechaConf}
-            </Typography>
-        </Grid>
+            {
+                fechaConf.map(elem => {return (
+                    <Grid item>
+                        {elem}
+                    </Grid>)
+                })
+            }
     </Grid>
     
   )
