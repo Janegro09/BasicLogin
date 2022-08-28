@@ -4,7 +4,8 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Swal from 'sweetalert2'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { DateGalery } from '../components';
 
 export const DateSelectionView = () => {
 
@@ -19,25 +20,27 @@ export const DateSelectionView = () => {
         setFecha(fecha);
         setValue(value);
     }
-
+    // useEffect(() => {
+    //     setFechaConf(fechaConf)
+    // })
+    
     const saveDate = () => {
         Swal.fire({
             title: 'Seleccionaste la fecha  <br>' + fecha,
             showCancelButton: true,
             confirmButtonText: 'Guardar',
             confirmButtonColor: '#655CC9'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  if(fechaConf.includes(fecha))  {
-                      Swal.fire('Seleccioná otra fecha porque esa ya existe', '', 'warning')
-                      return
-                    }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if(fechaConf.includes(fecha))  {
+                    Swal.fire('Seleccioná otra fecha porque esa ya existe', '', 'warning')
+                    return
+                }
                 if(fechaConf.length>=3) fechaConf.shift()
                 fechaConf.push(fecha)
                 Swal.fire('Fecha Guarda', '', 'success')
                 console.log(fechaConf)
-                setFechaConf(fechaConf)
-        }})
+            }})
     }
 
   return (
@@ -53,7 +56,19 @@ export const DateSelectionView = () => {
                 Selecciona una fecha
             </Typography>
         </Grid> 
-        <Grid container>
+        <Grid item>
+            {fecha &&             
+                <Button 
+                    color="primary" 
+                    sx={{ padding: 2 }}
+                    onClick={saveDate}
+                >
+                    <SaveOutlined sx={{ fontSize: 30, mr:1 }} />
+                    Guardar
+                </Button>
+            }
+        </Grid>
+        <Grid container sx={{justifyContent:'center'}}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Calendario"
@@ -67,25 +82,17 @@ export const DateSelectionView = () => {
                 />
             </LocalizationProvider>
         </Grid>
-        <Grid item>
-            {fecha &&             
-                <Button 
-                    color="primary" 
-                    sx={{ padding:2 }}
-                    onClick={saveDate}
-                >
-                    <SaveOutlined sx={{ fontSize: 30, mr:1 }} />
-                    Guardar
-                </Button>
-            }
-        </Grid>
-            {
-                fechaConf.map(elem => {return (
-                    <Grid item>
-                        {elem}
-                    </Grid>)
-                })
-            }
+        
+        <DateGalery fechas={fechaConf} />
+        {/* <Grid container>
+        {
+            fechaConf.map(elem => {return (
+                <Grid item>
+                    {elem}
+                </Grid>)
+            })
+        }
+        </Grid> */}
     </Grid>
     
   )
